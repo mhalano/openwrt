@@ -569,6 +569,7 @@ TFA_TARGETS:= \
 	mt7988-spim-nand-ubi-comb
 
 TFA_MAKE_FLAGS += \
+	DDR4_4BG_MODE=1 \
 	BOOT_DEVICE=$(BOOT_DEVICE) \
 	USE_MKIMAGE=1 MKIMAGE=$(STAGING_DIR_HOST)/bin/mkimage \
 	$(if $(findstring ddr4,$(DDR_TYPE)),DRAM_USE_DDR4=1) \
