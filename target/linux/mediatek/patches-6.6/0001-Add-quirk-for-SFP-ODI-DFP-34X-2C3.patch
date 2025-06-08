@@ -1,0 +1,24 @@
+From 17212cfbec0ad9da42a37222f1a046644bb97f8b Mon Sep 17 00:00:00 2001
+From: Marcos Alano <marcoshalano@gmail.com>
+Date: Sun, 8 Jun 2025 13:55:47 -0300
+Subject: [PATCH] Add quirk for SFP ODI DFP-34X-2C3
+
+---
+ drivers/net/phy/sfp.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/phy/sfp.c b/drivers/net/phy/sfp.c
+index 347c1e0e94d9..1dfa8c1b9f9c 100644
+--- a/drivers/net/phy/sfp.c
++++ b/drivers/net/phy/sfp.c
+@@ -524,6 +524,7 @@ static const struct sfp_quirk sfp_quirks[] = {
+ 	SFP_QUIRK_F("Turris", "RTSFP-2.5G", sfp_fixup_rollball),
+ 	SFP_QUIRK_F("Turris", "RTSFP-10", sfp_fixup_rollball),
+ 	SFP_QUIRK_F("Turris", "RTSFP-10G", sfp_fixup_rollball),
++	SFP_QUIRK_M("ODI", "DFP-34X-2C3", sfp_quirk_2500basex),
+ };
+ 
+ static size_t sfp_strlen(const char *str, size_t maxlen)
+-- 
+2.49.0
+
