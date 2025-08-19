@@ -1,0 +1,16 @@
+--- a/arch/arm64/boot/dts/mediatek/mt7988a-bananapi-bpi-r4.dts	2025-08-16 15:52:09.204091300 +0200
++++ b/arch/arm64/boot/dts/mediatek/mt7988a-bananapi-bpi-r4.dts	2025-08-17 04:50:24.552809120 +0200
+@@ -38,3 +38,13 @@
+ 		reg = <2>;
+ 	};
+ };
++
++&pcie0 {
++	slot0: pcie@0,0 {
++		reg = <0x0000 0 0 0 0>;
++		mt7996@0,0 {
++			reg = <0x0000 0 0 0 0>;
++			bin_file_name = "mediatek/mt7996/mt7996_eeprom_233_2i5i6i.bin";
++		};
++	};
++};
