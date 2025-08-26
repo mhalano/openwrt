@@ -11,7 +11,8 @@ prereq:
 		cat $(TMP_DIR)/.prereq-error; \
 		rm -f $(TMP_DIR)/.prereq-error; \
 		echo; \
-		false; \
+#		false; \
+    $(if $(FORCE),true,false); \
 	fi
 
 .SILENT: prereq
