@@ -1,14 +1,6 @@
-Subject: [PATCH] 9999-kernel-6.12-EEPROM-contains-0s
-
----
- mt7996/eeprom.c | 62 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 62 insertions(+)
-
-diff --git a/mt7996/eeprom.c b/mt7996/eeprom.c
-index da3231c..3f6426c 100644
---- a/mt7996/eeprom.c
-+++ b/mt7996/eeprom.c
-@@ -93,6 +93,44 @@ mt7996_eeprom_parse_stream(const u8 *eeprom, u8 band_idx, u8 *path,
+--- a/mt7996/eeprom.c	2025-10-22 18:50:34.351302436 -0300
++++ b/mt7996/eeprom.c	2025-10-22 18:51:23.491714258 -0300
+@@ -93,6 +93,44 @@
  	}
  }
  
@@ -53,7 +45,7 @@ index da3231c..3f6426c 100644
  static bool mt7996_eeprom_variant_valid(struct mt7996_dev *dev, const u8 *def)
  {
  #define FEM_INT	0
-@@ -148,6 +186,8 @@ mt7996_eeprom_check_or_use_default(struct mt7996_dev *dev, bool use_default)
+@@ -148,6 +186,8 @@
  		goto out;
  	}
  
@@ -62,7 +54,7 @@ index da3231c..3f6426c 100644
  	if (!use_default && mt7996_eeprom_variant_valid(dev, fw->data))
  		goto out;
  
-@@ -212,6 +252,28 @@ static int mt7996_eeprom_load(struct mt7996_dev *dev)
+@@ -212,6 +252,29 @@
  				goto out;
  			}
  		}
@@ -77,6 +69,7 @@ index da3231c..3f6426c 100644
 +				/* Success! Copy the good EEPROM data and proceed */
 +				memcpy(eeprom, fw_eeprom->data,
 +				       min_t(size_t, MT7996_EEPROM_SIZE, fw_eeprom->size));
++	      dev->flash_mode = true;
 +				release_firmware(fw_eeprom);
 +				dev_warn(dev->mt76.dev, "Successfully loaded board-specific EEPROM\n");
 +				/* EEPROM is now fixed, skip default fallback */
@@ -91,6 +84,3 @@ index da3231c..3f6426c 100644
  	}
  
  out:
--- 
-2.43.0
-
