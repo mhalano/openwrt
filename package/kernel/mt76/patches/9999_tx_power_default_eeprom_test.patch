@@ -1,6 +1,17 @@
---- a/mt7996/eeprom.c	2025-10-22 18:50:34.351302436 -0300
-+++ b/mt7996/eeprom.c	2025-10-22 18:51:23.491714258 -0300
-@@ -93,6 +93,44 @@
+From 63278c948c19e1edd19ddfd8d324350e91752867 Mon Sep 17 00:00:00 2001
+From: Gilly1970 <gilroyscott@hotmail.com>
+Date: Fri, 24 Oct 2025 00:51:57 +1000
+Subject: [PATCH] 9999_tx_power_default_eeprom_test
+
+---
+ mt7996/eeprom.c | 51 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
+
+diff --git a/mt7996/eeprom.c b/mt7996/eeprom.c
+index da3231c..6c627cb 100644
+--- a/mt7996/eeprom.c
++++ b/mt7996/eeprom.c
+@@ -93,6 +93,46 @@ mt7996_eeprom_parse_stream(const u8 *eeprom, u8 band_idx, u8 *path,
  	}
  }
  
@@ -29,12 +40,14 @@
 +	 * This is a workaround for hardware with incorrect (but non-zero)
 +	 * tx_power values in the EEPROM.
 +	 */
++	/*
 +	for (i = MT_EE_TX0_POWER_6G; i < MT_EE_TX0_POWER_6G + 8; ++i) {
 +		if (eeprom[i] != def[i]) {
 +			eeprom[i] = def[i];
 +			sixg_overridden = true;
 +		}
 +	}
++	*/
 +
 +	if (zeros_detected)
 +		dev_warn(dev->mt76.dev, "eeprom tx_power zeros detected, using defaults\n");
@@ -45,7 +58,7 @@
  static bool mt7996_eeprom_variant_valid(struct mt7996_dev *dev, const u8 *def)
  {
  #define FEM_INT	0
-@@ -148,6 +186,8 @@
+@@ -148,6 +188,8 @@ mt7996_eeprom_check_or_use_default(struct mt7996_dev *dev, bool use_default)
  		goto out;
  	}
  
@@ -54,33 +67,22 @@
  	if (!use_default && mt7996_eeprom_variant_valid(dev, fw->data))
  		goto out;
  
-@@ -212,6 +252,29 @@
+@@ -212,6 +254,15 @@ static int mt7996_eeprom_load(struct mt7996_dev *dev)
  				goto out;
  			}
  		}
 +
-+		/* check for faulty EEPROM and load board-specific override */
++		/* check for faulty EEPROM */
 +		u8 *eeprom = dev->mt76.eeprom.data;
 +		if (!eeprom[MT_EE_TX0_POWER_2G] || !eeprom[MT_EE_TX0_POWER_5G] || !eeprom[MT_EE_TX0_POWER_6G] ) {
-+			const struct firmware *fw_eeprom;
-+
-+			ret = request_firmware(&fw_eeprom, "mediatek/mt7996/mt7996_eeprom_233_2i5i6i.bin", dev->mt76.dev);
-+			if (!ret) {
-+				/* Success! Copy the good EEPROM data and proceed */
-+				memcpy(eeprom, fw_eeprom->data,
-+				       min_t(size_t, MT7996_EEPROM_SIZE, fw_eeprom->size));
-+	      dev->flash_mode = true;
-+				release_firmware(fw_eeprom);
-+				dev_warn(dev->mt76.dev, "Successfully loaded board-specific EEPROM\n");
-+				/* EEPROM is now fixed, skip default fallback */
-+				goto out;
-+			}
-+
-+			/* Board-specific file not found, fall back to the generic default bin */
-+			dev_warn(dev->mt76.dev, "Board-specific EEPROM not found, using generic default\n");
++			/* Faulty EEPROM (zeros) detected, force use of default eeprom.bin */
++			dev_warn(dev->mt76.dev, "Faulty EEPROM (zeros) detected, forcing use of default eeprom.bin\n");
 +			use_default = true;
 +			goto out;
 +		}
  	}
  
  out:
+-- 
+2.43.0
+
